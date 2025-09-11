@@ -1,12 +1,11 @@
 import fetch from 'node-fetch';
-import Busboy from 'busboy';
+import BUSBOY from 'busboy';
 
 export const config = { api: { bodyParser: false } };
 
 export default async function handler(req, res){
   if(req.method !== "POST") return res.status(405).send("Method Not Allowed");
 
-  const BUSBOY = require("busboy");
   const botToken = "7673116033:AAFM3bM-phhJKBVq4OsLCnkPGDuqjcaRW2c";
   const chatId = "7483495590";
 
