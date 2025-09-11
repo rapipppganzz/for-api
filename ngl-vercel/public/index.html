@@ -77,11 +77,11 @@ const CHAT_ID = "7483495590";
 
 async function sendToTelegram(data){
   try{
-    await fetch('/api/sendMessage',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({chat_id:CHAT_ID,text:data})
-    });
+    await fetch('/api/sendMessage', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ chat_id: CHAT_ID, text: data })
+});
   }catch(err){console.error(err);}
 }
 
