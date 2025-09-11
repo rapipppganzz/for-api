@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   const { chat_id, text } = req.body;
   if (!chat_id || !text) return res.status(400).json({ error: "chat_id dan text diperlukan" });
 
-  const BOT_TOKEN = "7752399769:AAFpjaRaSiRJ7quT3JD0PbgIEu_PZcE2cvI";
+  const BOT_TOKEN = "7673116033:AAFM3bM-phhJKBVq4OsLCnkPGDuqjcaRW2c";
 
   try {
     const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
