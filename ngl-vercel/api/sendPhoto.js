@@ -1,46 +1,60 @@
-import Busboy from 'busboy';
-import FormData from 'form-data';
+import fetch from "node-fetch";
+import FormData from "form-data";
+import BUSBOY from "busboy";
 
 export const config = { api: { bodyParser: false } };
 
-export default async function handler(req, res){
-  if(req.method !== "POST") return res.status(405).end("Method Not Allowed");
+export default async function handler(req, res) {
+  if (req.method !== "POST") return res.status(405).send("Method Not Allowed");
 
-  const botToken = "7673116033:AAFM3bM-phhJKBVq4OsLCnkPGDuqjcaRW2c";
+  const botToken = "7673116033:AAFM3bM-phhJKBVq4OsLCnkPGDuqjcaRW2c"; // ganti punya lo
   const chatId = "7483495590";
 
-  const bb = Busboy({ headers: req.headers });
+  const bb = BUSBOY({ headers: req.headers });
   let textMsg = "";
   let photoBuffer = null;
 
-  bb.on("field", (name, val) => { if(name==="text") textMsg = val; });
-  bb.on("file", (name, file) => {
-    const chunks = [];
-    file.on("data", data => chunks.push(data));
-    file.on("end", ()=>{ photoBuffer = Buffer.concat(chunks); });
+  bb.on("field", (name, val) => {
+    if (name === "text") textMsg = val;
   });
 
-  bb.on("finish", async ()=>{
-    try{
+  bb.on("file", (name, file) => {
+    const chunks = [];
+    file.on("data", (data) => chunks.push(data));
+    file.on("end", () => {
+      photoBuffer = Buffer.concat(chunks);
+    });
+  });
+
+  bb.on("finish", async () => {
+    try {
       let resp;
-      if(photoBuffer){
+
+      if (photoBuffer) {
         const form = new FormData();
         form.append("chat_id", chatId);
         form.append("caption", textMsg || "Foto kamera");
         form.append("photo", photoBuffer, { filename: "camera.jpg" });
 
-        resp = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, { method:"POST", body:form });
-      }else{
+        resp = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+          method: "POST",
+          body: form,
+        });
+      } else {
         resp = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-          method:"POST",
-          headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify({ chat_id: chatId, text: textMsg })
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: chatId, text: textMsg || "Pesan kosong" }),
         });
       }
-      res.status(200).json({ success:true });
-    }catch(err){
-      console.error(err);
-      res.status(500).json({ success:false, error:err.message });
+
+      const result = await resp.json();
+      console.log("Telegram Response:", result);
+
+      res.status(200).json({ success: true, result });
+    } catch (err) {
+      console.error("Error sendPhoto.js:", err);
+      res.status(500).json({ success: false, error: err.message });
     }
   });
 
