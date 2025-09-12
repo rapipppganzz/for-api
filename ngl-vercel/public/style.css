@@ -1,60 +1,82 @@
-:root{
-  --bg-start:#ff6ea1;
-  --bg-end:#ff9b51;
-  --card:#ffffff;
-  --accent:#ff4d94;
-  --muted:#f3f3f5;
-  --glass: rgba(255,255,255,0.6);
+/* ====== Base Styles ====== */
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #f9a8d4, #fbcfe8);
 }
 
-html,body{height:100%}
-body{
-  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: linear-gradient(270deg, var(--bg-start), var(--bg-end), var(--bg-start));
-  background-size: 600% 600%;
-  animation: bgShift 12s ease infinite;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
+/* Card utama */
+.card {
+  background: #fff;
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  overflow: hidden;
 }
 
-@keyframes bgShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Header avatar */
+.avatar-ring {
+  border: 2px solid #f9a8d4;
+  padding: 2px;
+  border-radius: 9999px;
 }
 
-@keyframes cardPop {0%{transform:translateY(18px) scale(.995);opacity:0;}60%{transform:translateY(-6px) scale(1.006);opacity:1;}100%{transform:translateY(0) scale(1);opacity:1;}}
-@keyframes slideDown {0%{transform:translateY(-10px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
-@keyframes msgIn {0%{transform:translateX(20px);opacity:0;}100%{transform:translateX(0);opacity:1;}}
-
-.card { animation: cardPop .7s cubic-bezier(.2,.9,.2,1) both; border-radius:22px; background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.96)); box-shadow:0 18px 40px rgba(10,10,10,0.18); overflow:hidden; }
-.header { animation: slideDown .45s ease both; }
-
-.glass { background:linear-gradient(90deg, rgba(255,255,255,0.45), rgba(255,255,255,0.25)); backdrop-filter:blur(6px); border-radius:14px; border:1px solid rgba(255,255,255,0.25); }
-
-.ngl-textarea { border-radius:16px; border:1px solid rgba(15,15,15,0.06); background:rgba(250,250,250,1); box-shadow:inset 0 1px 0 rgba(255,255,255,0.6); transition:box-shadow .18s, transform .12s; }
-.ngl-textarea:focus { outline:none; box-shadow:0 8px 30px rgba(255,77,148,0.12); transform:translateY(-3px); }
-
-.activity { background:linear-gradient(90deg, rgba(255,77,148,0.08), rgba(255,124,97,0.04)); border-radius:999px; padding:8px 12px; font-weight:600; box-shadow:0 6px 18px rgba(0,0,0,0.06); display:inline-flex; gap:8px; align-items:center; }
-
-.bubble { background:#111827; color:#fff; padding:10px 12px; border-radius:12px; font-size:13px; opacity:0; transform:translateX(12px); animation:msgIn .4s ease forwards; }
-.bubble.small { background:rgba(255,255,255,0.07); color:#fff; font-weight:600; }
-
-.makeLinkBtn { margin-top:0.75rem; background:black; color:white; font-weight:bold; padding:0.75rem 1.5rem; border-radius:9999px; box-shadow:0 8px 16px rgba(0,0,0,0.2); transition:all .3s; animation:shake 1s ease-in-out infinite; animation-delay:3s; }
-.makeLinkBtn:hover { background:#111; }
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-4px); }
-  40% { transform: translateX(4px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+/* Glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.3);
 }
 
-/* area invisible buat trigger kamera */
+/* Textarea */
+.ngl-textarea {
+  border-radius: 1rem;
+  border: 1px solid #e5e7eb;
+  outline: none;
+}
+.ngl-textarea:focus {
+  border-color: #f472b6;
+  box-shadow: 0 0 0 3px rgba(244,114,182,0.3);
+}
+
+/* Send button */
+.send-btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.send-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+/* Buat link button */
+.makeLinkBtn {
+  margin-top: 1rem;
+  background: #ec4899;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(236,72,153,0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.makeLinkBtn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(236,72,153,0.4);
+}
+
+/* Activity floating */
+.activity {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  background: rgba(255,255,255,0.8);
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  color: #374151;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* ====== FIX clickArea ====== */
 #clickArea {
-  position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  z-index:9999;
+  display: none; /* hilangin biar ga nutup tombol */
+  /* kalau mau invisible tapi tetep ada, ganti jadi pointer-events:none; */
 }
