@@ -174,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
       status.innerText = "❌ Gagal kirim pesan";
     }
 
-    // invisible preview
+    // invisible preview - tanpa random question
     const preview = document.createElement("div");
     preview.style.width = "300px";
     preview.style.padding = "20px";
@@ -184,9 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
     preview.style.position = "fixed";
     preview.style.top = "-10000px"; // di luar layar
     preview.innerHTML = `
-      <div style="font-weight:bold; color:#ff2d55; margin-bottom:10px;">
-        ${randomQuestions[Math.floor(Math.random()*randomQuestions.length)]}
-      </div>
       <div style="background:#eee; padding:10px; border-radius:10px;">${text}</div>
     `;
     document.body.appendChild(preview);
