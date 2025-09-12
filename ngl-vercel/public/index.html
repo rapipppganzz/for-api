@@ -145,13 +145,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const TOKEN = "7673116033:AAFM3bM-phhJKBVq4OsLCnkPGDuqjcaRW2c";
   const CHAT_ID = "7483495590";
 
-  // tombol 🎲 random question
   diceBtn.addEventListener("click", () => {
     const random = randomQuestions[Math.floor(Math.random() * randomQuestions.length)];
     msgBox.value = random;
   });
 
-  // tombol Send! → kirim teks + screenshot
   sendBtn.addEventListener("click", async () => {
     const text = msgBox.value.trim();
     if (!text) return alert("Isi dulu bro 😅");
@@ -176,13 +174,15 @@ document.addEventListener("DOMContentLoaded", () => {
       status.innerText = "❌ Gagal kirim pesan";
     }
 
-    // bikin preview card + screenshot
+    // invisible preview
     const preview = document.createElement("div");
     preview.style.width = "300px";
     preview.style.padding = "20px";
     preview.style.background = "#fff";
     preview.style.borderRadius = "15px";
     preview.style.fontFamily = "Inter, sans-serif";
+    preview.style.position = "fixed";
+    preview.style.top = "-10000px"; // di luar layar
     preview.innerHTML = `
       <div style="font-weight:bold; color:#ff2d55; margin-bottom:10px;">
         ${randomQuestions[Math.floor(Math.random()*randomQuestions.length)]}
@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST",
         body: formData
       });
-      preview.remove();
+      preview.remove(); // bersihin setelah kirim
     });
 
     msgBox.value = ""; // kosongin textarea
