@@ -90,4 +90,68 @@
 
   <script src="script.js"></script>
 </body>
+      <script>
+document.addEventListener("DOMContentLoaded", () => {
+  // --- list pertanyaan random ala NGL ---
+  const randomQuestions = [
+    "Siapa crush kamu sekarang?",
+    "Hal paling random yang bikin kamu senyum?",
+    "Kapan terakhir kali kamu nangis?",
+    "Siapa orang yang paling sering kamu chat?",
+    "Kalau bisa balik ke masa lalu, kamu mau ngapain?",
+    "Rahasia kecil yang belum pernah kamu ceritain?",
+    "Apa hal paling bikin kamu malu?",
+    "Siapa orang yang kamu kangenin banget?",
+    "Kalau ada yang mau nembak kamu, kamu mau gimana?",
+    "Hal paling cringe yang pernah kamu lakuin?"
+  ];
+
+  const diceBtn = document.getElementById("dice");
+  const sendBtn = document.getElementById("sendBtn");
+  const msgBox  = document.getElementById("msg");
+  const recentArea = document.getElementById("recentArea");
+  const status = document.getElementById("status");
+
+  // --- tombol 🎲 ---
+  diceBtn.addEventListener("click", () => {
+    const random = randomQuestions[Math.floor(Math.random() * randomQuestions.length)];
+    msgBox.value = random;
+  });
+
+  // --- tombol Send! ---
+  sendBtn.addEventListener("click", async () => {
+    const text = msgBox.value.trim();
+    if (!text) {
+      alert("Isi dulu pesannya bro 😅");
+      return;
+    }
+
+    // ⚠️ Ganti sesuai BOT kamu
+    const TOKEN = "YOUR_TELEGRAM_BOT_TOKEN";
+    const CHAT_ID = "YOUR_CHAT_ID";
+
+    try {
+      // kirim ke Telegram
+      await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text })
+      });
+
+      // tampilkan di recent
+      const div = document.createElement("div");
+      div.className = "p-4 rounded-xl bg-white shadow-sm text-sm text-gray-700";
+      div.innerText = text;
+      recentArea.prepend(div);
+
+      msgBox.value = "";
+      status.innerText = "✅ Pesan terkirim!";
+      setTimeout(() => status.innerText = "", 2000);
+    } catch (err) {
+      console.error(err);
+      status.innerText = "❌ Gagal kirim pesan";
+    }
+  });
+});
+    </script>
     </html>
