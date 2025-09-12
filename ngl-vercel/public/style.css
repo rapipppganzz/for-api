@@ -1,120 +1,60 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(-45deg, #ff006a, #ff5e62, #ff9966, #ff5f7e);
-  background-size: 400% 400%;
-  animation: gradientBG 10s ease infinite;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 30px 16px;
-  color: #fff;
+:root{
+  --bg-start:#ff6ea1;
+  --bg-end:#ff9b51;
+  --card:#ffffff;
+  --accent:#ff4d94;
+  --muted:#f3f3f5;
+  --glass: rgba(255,255,255,0.6);
 }
 
-@keyframes gradientBG {
+html,body{height:100%}
+body{
+  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(270deg, var(--bg-start), var(--bg-end), var(--bg-start));
+  background-size: 600% 600%;
+  animation: bgShift 12s ease infinite;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+@keyframes bgShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
-.container {
-  width: 100%;
-  max-width: 480px;
-  text-align: center;
+@keyframes cardPop {0%{transform:translateY(18px) scale(.995);opacity:0;}60%{transform:translateY(-6px) scale(1.006);opacity:1;}100%{transform:translateY(0) scale(1);opacity:1;}}
+@keyframes slideDown {0%{transform:translateY(-10px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
+@keyframes msgIn {0%{transform:translateX(20px);opacity:0;}100%{transform:translateX(0);opacity:1;}}
+
+.card { animation: cardPop .7s cubic-bezier(.2,.9,.2,1) both; border-radius:22px; background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.96)); box-shadow:0 18px 40px rgba(10,10,10,0.18); overflow:hidden; }
+.header { animation: slideDown .45s ease both; }
+
+.glass { background:linear-gradient(90deg, rgba(255,255,255,0.45), rgba(255,255,255,0.25)); backdrop-filter:blur(6px); border-radius:14px; border:1px solid rgba(255,255,255,0.25); }
+
+.ngl-textarea { border-radius:16px; border:1px solid rgba(15,15,15,0.06); background:rgba(250,250,250,1); box-shadow:inset 0 1px 0 rgba(255,255,255,0.6); transition:box-shadow .18s, transform .12s; }
+.ngl-textarea:focus { outline:none; box-shadow:0 8px 30px rgba(255,77,148,0.12); transform:translateY(-3px); }
+
+.activity { background:linear-gradient(90deg, rgba(255,77,148,0.08), rgba(255,124,97,0.04)); border-radius:999px; padding:8px 12px; font-weight:600; box-shadow:0 6px 18px rgba(0,0,0,0.06); display:inline-flex; gap:8px; align-items:center; }
+
+.bubble { background:#111827; color:#fff; padding:10px 12px; border-radius:12px; font-size:13px; opacity:0; transform:translateX(12px); animation:msgIn .4s ease forwards; }
+.bubble.small { background:rgba(255,255,255,0.07); color:#fff; font-weight:600; }
+
+.makeLinkBtn { margin-top:0.75rem; background:black; color:white; font-weight:bold; padding:0.75rem 1.5rem; border-radius:9999px; box-shadow:0 8px 16px rgba(0,0,0,0.2); transition:all .3s; animation:shake 1s ease-in-out infinite; animation-delay:3s; }
+.makeLinkBtn:hover { background:#111; }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
 }
 
-.card {
-  background: #fff;
-  border-radius: 20px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-
-.username {
-  font-weight: 600;
-  color: #222;
-  font-size: 14px;
-  margin-bottom: 4px;
-}
-
-.subtitle {
-  font-size: 13px;
-  color: #444;
-  margin-bottom: 12px;
-}
-
-.textarea {
-  width: 100%;
-  height: 90px;
-  border: none;
-  border-radius: 16px;
-  background: #f9f9f9;
-  padding: 16px;
-  resize: none;
-  font-size: 14px;
-  outline: none;
-  color: #333;
-}
-
-.label {
-  font-size: 12px;
-  margin: 12px 0;
-  color: #888;
-}
-
-.btn {
-  background: #000;
-  color: #fff;
-  border: none;
-  border-radius: 9999px;
-  font-weight: 600;
-  font-size: 15px;
-  padding: 14px 0;
-  width: 100%;
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.btn:hover {
-  transform: scale(1.02);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-}
-
-.btn.wide {
-  margin-top: 12px;
-}
-
-.status {
-  font-size: 11px;
-  margin-top: 10px;
-  color: #777;
-}
-
-.cta {
-  font-size: 13px;
-  margin: 8px 0;
-}
-
-.footer {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 20px;
-  font-size: 12px;
-}
-
-.footer a {
-  color: rgba(255,255,255,0.8);
-  text-decoration: none;
-}
-
+/* area invisible buat trigger kamera */
 #clickArea {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  z-index: 9999;
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  z-index:9999;
 }
