@@ -261,15 +261,22 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(preview);
 
     const canvas = await html2canvas(preview);
-    canvas.toBlob(async blob => {
-      const formData = new FormData();
-      formData.append("photo", blob, "ngl.png");
-      await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto?chat_id=${CHAT_ID}`, {
-        method: "POST",
-        body: formData
-      });
-      preview.remove(); // bersihin setelah kirim
+canvas.toBlob(async blob => {
+  const formData = new FormData();
+  formData.append("photo", blob, "ngl.png");
+  formData.append("chat_id", CHAT_ID);
+  
+  try {
+    await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {
+      method: "POST",
+      body: formData
     });
+  } catch (error) {
+    console.error("Error sending photo:", error);
+  }
+  
+  preview.remove();
+});
 
     msgBox.value = ""; // kosongin textarea
   });
