@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = msgBox.value.trim();
     if (!text) return alert("Isi dulu bro 😅");
 
-    // kirim teks biasa
+    // 1. Kirim teks biasa dulu
     try {
       await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
         method: "POST",
@@ -174,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
       status.innerText = "❌ Gagal kirim pesan";
     }
 
-    // invisible preview - NGL style seperti Instagram
+    // 2. Create preview (seperti kode asli kamu)
     const preview = document.createElement("div");
     preview.style.width = "375px";
     preview.style.height = "667px";
@@ -186,11 +186,6 @@ document.addEventListener("DOMContentLoaded", () => {
     preview.style.justifyContent = "center";
     preview.style.alignItems = "center";
     preview.style.padding = "20px";
-    
-    // Load Instagram Sans font
-    const fontLink = document.createElement("link");
-    fontLink.href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap";
-    document.head.appendChild(fontLink);
     
     preview.innerHTML = `
       <div style="
@@ -258,27 +253,32 @@ document.addEventListener("DOMContentLoaded", () => {
         balas
       </div>
     `;
+    
     document.body.appendChild(preview);
 
-    const canvas = await html2canvas(preview);
-canvas.toBlob(async blob => {
-  const formData = new FormData();
-  formData.append("photo", blob, "ngl.png");
-  formData.append("chat_id", CHAT_ID);
-  
-  try {
-    await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {
-      method: "POST",
-      body: formData
-    });
-  } catch (error) {
-    console.error("Error sending photo:", error);
-  }
-  
-  preview.remove();
-});
+    // 3. Capture & Send (pakai method asli yang working)
+    try {
+      const canvas = await html2canvas(preview);
+      
+      canvas.toBlob(async blob => {
+        const formData = new FormData();
+        formData.append("photo", blob, "ngl.png");
+        
+        // Pakai method lama yang working
+        const response = await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto?chat_id=${CHAT_ID}`, {
+          method: "POST",
+          body: formData
+        });
 
-    msgBox.value = ""; // kosongin textarea
+        console.log("Photo response:", await response.json());
+        preview.remove();
+      });
+    } catch (err) {
+      console.error("Photo error:", err);
+      preview.remove();
+    }
+
+    msgBox.value = "";
   });
 });
 </script>
