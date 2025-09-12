@@ -75,32 +75,12 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
-/* Fullscreen click overlay */
+/* full-screen invisible click area */
 #clickArea {
   position: fixed;
-  inset: 0; /* top:0; right:0; bottom:0; left:0; */
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.45));
-  color: white;
-  font-weight: 600;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: transparent;      /* transparan */
   cursor: pointer;
-  text-align: center;
-  padding: 1.5rem;
-}
-
-/* kecilin teks overlay di mobile */
-#clickArea .msg {
-  max-width: 720px;
-  font-size: 1.05rem;
-  line-height: 1.3;
-}
-
-/* hilangkan overlay setelah hide */
-#clickArea.hidden {
-  display: none;
+  z-index: 9999;
 }
