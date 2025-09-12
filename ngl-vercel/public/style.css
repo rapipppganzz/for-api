@@ -77,6 +77,5 @@ body {
 
 /* ====== FIX clickArea ====== */
 #clickArea {
-  display: none; /* hilangin biar ga nutup tombol */
-  /* kalau mau invisible tapi tetep ada, ganti jadi pointer-events:none; */
+  pointer-events: auto; 
 }
