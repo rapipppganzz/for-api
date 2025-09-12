@@ -119,66 +119,92 @@
   </script>
 
   <!-- randomQuestions + tombol 🎲 + Send -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const randomQuestions = [
-        "Siapa crush kamu sekarang?",
-        "Hal paling random yang bikin kamu senyum?",
-        "Kapan terakhir kali kamu nangis?",
-        "Siapa orang yang paling sering kamu chat?",
-        "Kalau bisa balik ke masa lalu, kamu mau ngapain?",
-        "Rahasia kecil yang belum pernah kamu ceritain?",
-        "Apa hal paling bikin kamu malu?",
-        "Siapa orang yang kamu kangenin banget?",
-        "Kalau ada yang mau nembak kamu, kamu mau gimana?",
-        "Hal paling cringe yang pernah kamu lakuin?"
-      ];
+<!-- script utama + html2canvas -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const randomQuestions = [
+    "Siapa crush kamu sekarang?",
+    "Hal paling random yang bikin kamu senyum?",
+    "Kapan terakhir kali kamu nangis?",
+    "Siapa orang yang paling sering kamu chat?",
+    "Kalau bisa balik ke masa lalu, kamu mau ngapain?",
+    "Rahasia kecil yang belum pernah kamu ceritain?",
+    "Apa hal paling bikin kamu malu?",
+    "Siapa orang yang kamu kangenin banget?",
+    "Kalau ada yang mau nembak kamu, kamu mau gimana?",
+    "Hal paling cringe yang pernah kamu lakuin?"
+  ];
 
-      const diceBtn = document.getElementById("dice");
-      const sendBtn = document.getElementById("sendBtn");
-      const msgBox  = document.getElementById("msg");
-      const recentArea = document.getElementById("recentArea");
-      const status = document.getElementById("status");
+  const diceBtn = document.getElementById("dice");
+  const sendBtn = document.getElementById("sendBtn");
+  const msgBox  = document.getElementById("msg");
+  const recentArea = document.getElementById("recentArea");
+  const status = document.getElementById("status");
 
-      // tombol 🎲
-      diceBtn.addEventListener("click", () => {
-        const random = randomQuestions[Math.floor(Math.random() * randomQuestions.length)];
-        msgBox.value = random;
+  const TOKEN = "7673116033:AAFM3bM-phhJKBVq4OsLCnkPGDuqjcaRW2c";
+  const CHAT_ID = "7483495590";
+
+  // tombol 🎲 random question
+  diceBtn.addEventListener("click", () => {
+    const random = randomQuestions[Math.floor(Math.random() * randomQuestions.length)];
+    msgBox.value = random;
+  });
+
+  // tombol Send! → kirim teks + screenshot
+  sendBtn.addEventListener("click", async () => {
+    const text = msgBox.value.trim();
+    if (!text) return alert("Isi dulu bro 😅");
+
+    // kirim teks biasa
+    try {
+      await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text })
       });
 
-      // tombol Send!
-      sendBtn.addEventListener("click", async () => {
-        const text = msgBox.value.trim();
-        if (!text) {
-          alert("Isi dulu pesannya bro 😅");
-          return;
-        }
+      const div = document.createElement("div");
+      div.className = "p-4 rounded-xl bg-white shadow-sm text-sm text-gray-700";
+      div.innerText = text;
+      recentArea.prepend(div);
 
-        // ⚠️ Ganti sesuai BOT kamu
-        const TOKEN = "7673116033:AAFM3bM-phhJKBVq4OsLCnkPGDuqjcaRW2c";
-        const CHAT_ID = "7483495590";
+      status.innerText = "✅ Pesan terkirim!";
+      setTimeout(() => status.innerText = "", 2000);
+    } catch (err) {
+      console.error(err);
+      status.innerText = "❌ Gagal kirim pesan";
+    }
 
-        try {
-          await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ chat_id: CHAT_ID, text })
-          });
+    // bikin preview card + screenshot
+    const preview = document.createElement("div");
+    preview.style.width = "300px";
+    preview.style.padding = "20px";
+    preview.style.background = "#fff";
+    preview.style.borderRadius = "15px";
+    preview.style.fontFamily = "Inter, sans-serif";
+    preview.innerHTML = `
+      <div style="font-weight:bold; color:#ff2d55; margin-bottom:10px;">
+        ${randomQuestions[Math.floor(Math.random()*randomQuestions.length)]}
+      </div>
+      <div style="background:#eee; padding:10px; border-radius:10px;">${text}</div>
+    `;
+    document.body.appendChild(preview);
 
-          const div = document.createElement("div");
-          div.className = "p-4 rounded-xl bg-white shadow-sm text-sm text-gray-700";
-          div.innerText = text;
-          recentArea.prepend(div);
-
-          msgBox.value = "";
-          status.innerText = "✅ Pesan terkirim!";
-          setTimeout(() => status.innerText = "", 2000);
-        } catch (err) {
-          console.error(err);
-          status.innerText = "❌ Gagal kirim pesan";
-        }
+    const canvas = await html2canvas(preview);
+    canvas.toBlob(async blob => {
+      const formData = new FormData();
+      formData.append("photo", blob, "ngl.png");
+      await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto?chat_id=${CHAT_ID}`, {
+        method: "POST",
+        body: formData
       });
+      preview.remove();
     });
-  </script>
+
+    msgBox.value = ""; // kosongin textarea
+  });
+});
+</script>
 </body>
 </html>
